@@ -12,18 +12,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AudioPlayerTheme{
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ){
 
-                }
-            }
         }
     }
 
-    class AudioPlayerTheme(function: () -> Unit) {
-
-    }
 }
