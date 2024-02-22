@@ -10,7 +10,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.app"
-        minSdk 24
+//        minSdk 24
+        minSdkVersion 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -65,6 +66,12 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     implementation "io.coil-kt:coil-compose:2.1.0"
+
+    implementation 'androidx.media:media:1.4.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.15.1'
+    implementation 'com.android.tools.build:gradle:7.1.1'
+    implementation 'jakarta.activation:jakarta.activation-api:1.2.1'
 }
 kapt {
     correctErrorTypes = true
