@@ -41,13 +41,13 @@ internal class MediaPlayerNotificationManager(
             setUseFastForwardAction(false)
         }
 
-        fun hideNotification(){
-            notificationManager.setPlayer(null)
-        }
+    }
+    fun hideNotification(){
+        notificationManager.setPlayer(null)
+    }
 
-        fun showNotification(player : Player){
-            notificationManager.setPlayer(player)
-        }
+    fun showNotification(player : Player){
+        notificationManager.setPlayer(player)
     }
 
     inner class DescriptionAdapter(private val controller: MediaControllerCompat):
