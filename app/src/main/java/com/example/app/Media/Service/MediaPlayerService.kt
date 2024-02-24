@@ -29,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -129,6 +130,36 @@ class MediaPlayerService: MediaBrowserServiceCompat() {
        }
     }
 
+    override fun onCustomAction(
+        action: String,
+        extras: Bundle?,
+        result: Result<Bundle>
+    ) {
+        when(action){
+            K.START_MEDIA_PLAY_ACTION -> {
+                mediaPlayerNotificationManager.showNotification(exoPlayer)
+            }
+            K.REFRESH_MEDIA_PLAY_ACTION -> {
+                mediaSource.refresh()
+                notifyChildrenChanged(K.MEDIA_ROOT_ID)
+            }
+
+            else -> Unit
+        }
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        exoPlayer.stop()
+        exoPlayer.clearMediaItems()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
+        exoPlayer.release()
+    }
+
     inner class PlayerNotificationListener:PlayerNotificationManager.NotificationListener{
         override fun onNotificationCancelled(
             notificationId: Int,
@@ -179,10 +210,18 @@ class MediaPlayerService: MediaBrowserServiceCompat() {
             playWhenReady: Boolean,
             extras: Bundle?
         ) {
-            val itemToPlay = mediaSource.audioMediaMetaData.find {
-                it.description.mediaId == mediaId
+            mediaSource.whenReady {
+                val itemToPlay = mediaSource.audioMediaMetaData.find {
+                    it.description.mediaId == mediaId
+                }
+                currentPlayingMedia = itemToPlay
+
+                preparePlayer(
+                    mediaMetadata = mediaSource.audioMediaMetaData,
+                    itemToPlay = itemToPlay,
+                    playWhenReady = playWhenReady
+                )
             }
-            currentPlayingMedia = itemToPlay
         }
 
         override fun onPrepareFromSearch(
